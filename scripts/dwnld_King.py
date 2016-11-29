@@ -2,6 +2,8 @@
 
 import os
 import urllib
+import glob
+import zipfile
 
 # Select output directory
 outDir = r'C:\Users\Christy\Desktop\python_scripts\test'
@@ -21,9 +23,25 @@ def downloadGISData(shapefiles):
     assrFilePath = urlpart + shapefiles + ".zip"
     urllib.urlretrieve(assrFilePath, os.path.join(outDir, (shapefiles + ".zip")))
     print shapefiles + ".zip downloaded"
-    
-# download files
+
+# function to list and extract zip files in output directory
+def unzipFiles(directory):
+    files = glob.glob((directory + '/*.zip'))
+    for file in files:
+        zip = zipfile.ZipFile((file))  
+        zip.extractall(directory)
+        print "extracted " + file
+
+# download assessor files
 downloadAssessorData(assrdata)
-    
+
+# download shapefiles
 for shape in shapes:
     downloadGISData(shape)
+
+# unzip any zipfiles in output directory    
+unzipFiles(outDir)
+   
+
+
+      
