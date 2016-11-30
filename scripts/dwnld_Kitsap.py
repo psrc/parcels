@@ -17,8 +17,8 @@ assrdata3 = ["Property_addresses", "Codes", "Valuations", "Land_influence"]
 prclshps = ["parcels", "siteaddr", "parcell"]
 listbls = ["flatats", "main", "building", "land"]
 
-# dictionary containing urlparts
-def urlzipDict(x):
+# dictionary containing url headers
+def urlDict(x):
     return {
         'prclshps': 'ftp://kcftp2.co.kitsap.wa.us/gis/datacd/arcview/layers/parcel/',
         'listbls': 'ftp://kcftp2.co.kitsap.wa.us/gis/datacd/arcview/layers/atsinfo/',
@@ -26,9 +26,9 @@ def urlzipDict(x):
         'docx': 'http://www.kitsapgov.com/assr/data_download/file_descriptions/'
     }[x]
 
-# function to download assessor data
-def downloadData(assessordata, alist, ext):
-    urlpart = urlzipDict(alist)
+# function to download data
+def downloadData(assessordata, dictterm, ext):
+    urlpart = urlDict(dictterm)
     if ext == 'docx':
         assessordata = assessordata.lower()                
     assrFilePath = urlpart + assessordata + "." + ext
@@ -63,7 +63,7 @@ for data in prclshps:
 for data in listbls:
     downloadData(data, 'listbls', 'zip')
 
-# list and extract zipfiles in output directory
+# extract zip files to output directory
 unzipFiles(outDir)
     
 
