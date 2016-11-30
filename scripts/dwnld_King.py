@@ -39,7 +39,7 @@ downloadAssessorData(assrdata)
 for shape in shapes:
     downloadGISData(shape)
 
-# unzip any zipfiles in output directory    
+# extract zip files to output directory    
 unzipFiles(outDir)
    
 
