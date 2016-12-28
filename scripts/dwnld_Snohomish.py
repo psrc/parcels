@@ -1,6 +1,4 @@
 # This script downloads selected Snohomish County assessor and GIS files for use in the parcel database
-#ftp://ftp.snoco.org/Assessor/PropertySales/Property_Class_Codes_2015-10-27.pdf
-
 
 import os
 import urllib
@@ -15,9 +13,9 @@ outDir = r'C:\Users\Christy\Desktop\python_scripts\test'
 
 # Inputs
 assrroll = "assr_roll"
-propChar = " "
+propChar = "SnohomishCo.*TEXT.*AV"
 propCharDoc = "Property Characteristics Extract"
-propSales = "Property_Class_Codes*" #wildcard
+propSales = "Property_Class_Codes_\d+[-]\d+[-]\d+"
 shapes = "parcels"
 
 # dictionary containing url headers
@@ -29,14 +27,18 @@ def urlDict(x):
         'gis': 'ftp://ftp.snoco.org/Assessor/shapefiles/'
     }[x]
 
+# function to read webpage
+def readURL(urlpart):
+    url = urllib2.urlopen(urlpart).read()
+    s = str(BeautifulSoup(url, "lxml"))
+    return s
+    
 # function to download data
 def downloadData(assessordata, dictterm, ext):
     urlpart = urlDict(dictterm)
-    if assessordata == propChar:
-        url = urllib2.urlopen(urlpart).read()
-        soup = BeautifulSoup(url, "lxml")
-        soupstr = str(soup)
-        searchObj = re.findall(r'(SnohomishCo.*TEXT.*AV)', soupstr)
+    if assessordata in (propChar, propSales):
+        soupstr = readURL(urlpart)
+        searchObj = re.findall(assessordata, soupstr)
         for obj in searchObj:
             assrFilePath = urlpart + obj + "." + ext
             urllib.urlretrieve(assrFilePath, os.path.join(outDir, (obj + "." + ext)))
@@ -60,7 +62,9 @@ def unzipFiles(directory):
 downloadData(assrroll, 'assr_roll', 'zip')
 downloadData(propChar, 'prop_char', 'zip')
 downloadData(propCharDoc, 'prop_char', 'doc')
+downloadData(propSales, 'prop_sales', 'pdf')
 downloadData(shapes, 'gis', 'zip')
 
 # extract zip files to output directory
 unzipFiles(outDir)
+
