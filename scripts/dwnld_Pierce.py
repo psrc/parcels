@@ -6,7 +6,7 @@ import glob
 import zipfile
 
 # Select output directory
-outDir = r'C:\Users\Christy\Desktop\python_scripts\test'
+outDir = r'J:\Projects\UrbanSim\NEW_DIRECTORY\Databases\Access\Parcels\Pierce\2017\dwnld_2017_02_16'
 
 # Inputs
 assrdata = ["appraisal_account", "improvement", "improvement_builtas", "improvement_detail", "land_attribute", "sale", "seg_merge", 
@@ -21,8 +21,9 @@ def urlDict(x):
         'gis': 'http://gisdata.piercecowa.opendata.arcgis.com/datasets/'
     }[x]
 
-# function to download assessor data
+# function to download data
 def downloadData(assessordata, dictterm, ext):
+    print "downloading " + dictterm
     urlpart = urlDict(dictterm)               
     assrFilePath = urlpart + assessordata + "." + ext
     urllib.urlretrieve(assrFilePath, os.path.join(outDir, (assessordata + "." + ext)))
@@ -30,6 +31,7 @@ def downloadData(assessordata, dictterm, ext):
 
 # function to unzip files in output directory
 def unzipFiles(directory):
+    print "extracting zip files"
     listfiles = glob.glob((directory + '/*.zip'))
     for afile in listfiles:
         a = os.path.basename(afile)
@@ -44,7 +46,7 @@ for data in assrdata:
 
 for data in assrdata:
     downloadData(data, 'assrdesc', 'pdf')
-
+    
 downloadData(shapes, 'gis', 'zip')
 
 # extract zip files to output directory
