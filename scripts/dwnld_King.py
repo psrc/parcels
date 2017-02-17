@@ -6,7 +6,7 @@ import glob
 import zipfile
 
 # Select output directory
-outDir = r'C:\Users\Christy\Desktop\python_scripts\test'
+outDir = r'J:\Projects\UrbanSim\NEW_DIRECTORY\Databases\Access\Parcels\King\2017'
 
 # Inputs
 assrdata = 'http://aqua.kingcounty.gov/extranet/assessor/cd.zip'
@@ -33,13 +33,16 @@ def unzipFiles(directory):
         print "extracted " + file
 
 # download assessor files
+print "downloading assessor data"
 downloadAssessorData(assrdata)
 
 # download shapefiles
+print "downloading parcel shapefiles"
 for shape in shapes:
     downloadGISData(shape)
 
 # extract zip files to output directory    
+print "extracting zip files"
 unzipFiles(outDir)
    
 
