@@ -9,7 +9,7 @@ import glob
 import zipfile
 
 # Select output directory
-outDir = r'C:\Users\Christy\Desktop\python_scripts\test'
+outDir = r'J:\Projects\UrbanSim\NEW_DIRECTORY\Databases\Access\Parcels\Snohomish\2017\dwnld_2017_02_16'
 
 # Inputs
 assrroll = "assr_roll"
@@ -35,6 +35,7 @@ def readURL(urlpart):
     
 # function to download data
 def downloadData(assessordata, dictterm, ext):
+    print "downloading " + dictterm + " data"
     urlpart = urlDict(dictterm)
     if assessordata in (propChar, propSales):
         soupstr = readURL(urlpart)
@@ -50,6 +51,7 @@ def downloadData(assessordata, dictterm, ext):
 
 # function to unzip files in output directory
 def unzipFiles(directory):
+    print "extracted zip files"
     listfiles = glob.glob((directory + '/*.zip'))
     for afile in listfiles:
         a = os.path.basename(afile)
