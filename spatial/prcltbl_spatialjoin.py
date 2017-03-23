@@ -51,23 +51,23 @@ def newFieldsDict(x):
         'block': ['BLOCK10']
     }[x]   
 
-def delFieldsDict(x):
-    return {
-        'uga': ["TARGET_FID", "Shape_Leng", "Shape_Area"],
-        'juris': ["TARGET_FID", "Join_Count", "CITYNAME", "CITYFIPS", "CNTYFIPS", "ANNXNAME", "BRBNO", "ORDNO", "EFF_DATE", "ACRES", "APPR_DATE", "wtrshed", "FEAT_TYPE", "RGEO_CLASS", "CLASS_DESC", "Shape_STArea__", "Shape_STLength__", "Shape_Length", "Shape_Area", "acres_gis"], 
-        'zipcode': ["TARGET_FID", "Join_Count", "STATEFP10", "GEOID10"],
-        'schooldist': ["TARGET_FID", "Join_Count", "STATEFP", "UNSDLEA", "GEOID", "LSAD", "LOGRADE", "HIGRADE", "MTFCC", "SDTYP", "FUNCSTAT", "ALAND", "AWATER", "INTPTLAT", "INTPTLON", "Shape_Leng", "Shape_Area"], 
-        'urbcen': ["TARGET_FID", "Join_Count", "ID", "AREA_FEET", "PERIMETER_", "PARKING", "POPDEN1996", "PLANPOP96", "JOBS1994", "PLANJOBS94", "HOUSEUNITS", "HUPLAN", "FLOORSPC", "ACRES", "HECTARES", "AREA", "PERIMETER", "ADOPTDATE"],
-        'micen': ["TARGET_FID", "Join_Count", "COUNT_", "COUNTY", "POP00", "EMP00", "Shape_Leng", "Acres"],
-        'taz': ["Join_Count", "Join_Count_1", "TARGET_FID", "TARGET_FID_1", "Shape_Leng", "Shape_Area"],
-        'faz': ["TARGET_FID", "Join_Count", "nFAZ10", "County"],
-        'tract': ["TARGET_FID", "Join_Count", "STATEFP10", "COUNTYFP10", "TRACTCE10", "NAME10", "NAMELSAD10", "MTFCC10", "FUNCSTAT10", "ALAND10", "AWATER10", "INTPTLAT10", "INTPTLON10", "NAME_VAL"],
-        'blockgp': ["TARGET_FID", "Join_Count", "STATEFP10", "COUNTYFP10", "TRACTCE10", "BLKGRPCE10", "NAMELSAD10", "MTFCC10", "FUNCSTAT10", "ALAND10", "AWATER10", "INTPTLAT10", "INTPTLON10", "Population"],
-        'block': ["OBJECTID_1", "OBJECTID_12", "TARGET_FID", "Join_Count", "STATEFP10", "COUNTYFP10", "TRACTCE10", "BLOCKCE10", "NAME10", "MTFCC10", "UR10", "UACE10", "FUNCSTAT10", "ALAND10", "AWATER10", "INTPTLAT10", "INTPTLON10", "Block_Pop", "TAZ_POP", "TAZ_ID", "totArea", "PLACE", "JURIS_1", "JURISTYPE", "Centr_X", "Cntr_Y", "acres"]
-    }[x] 
+def keepFieldsDict(x):
+    return{
+        'uga': ['IN_UGA'],
+        'juris': ['CNTYNAME', 'JURIS'],
+        'zipcode': ['ZIP'],
+        'schooldist': ['DISTNAME', 'DistrictID'],
+        'urbcen': ['URBCEN'],
+        'micen': ['MIC'],
+        'taz': ['TAZ', 'TAD'],
+        'faz': ['FAZ10', 'LARGE_AREA'],
+        'tract': ['TRACT10'],
+        'blockgp': ['BLOCKGRP10'],
+        'block': ['BLOCK10']
+    }[x]
     
 # Environment inputs  
-counties = ['Kitsap', 'Pierce', 'Snohomish', 'King']
+counties = ['Kitsap', 'Pierce', 'Snohomish', 'King'] 
 shp0 = ['kitptfnl15testCopy.shp','pieptfnl15testCopy.shp', 'snoptfnl15testCopy.shp', 'kinptfnl15testCopy.shp']
 joinFeaturesList = ['uga', 'juris', 'zipcode', 'schooldist', 'urbcen', 'micen', 'taz', 'faz', 'tract', 'blockgp', 'block']
 target = ["overlay"+str(i) for i in range(1, len(joinFeaturesList)+1)]
@@ -86,16 +86,23 @@ for c in range(len(counties)):
     
     nums = range(0, len(joinFeaturesList))
     
+    keepFieldsList = []
+    requiredFieldsList = ["OBJECTID", "Shape"]
+    
     # Iterate for number of join features
     for n in nums:
         if n == 0:
             targetFeatures = os.path.join(workspace, shp0[c])
         else:
             targetFeatures = os.path.join(outWorkspace, target[n-1])
+        
+        # List current target feature fields
+        keepFieldsList = [f.name for f in arcpy.ListFields(targetFeatures)]
+        
         outfc = os.path.join(outWorkspace, target[n])
         joinFeatures = shpDict(joinFeaturesList[n]) 
         
-        # Spatial Join
+        # Spatial join
         arcpy.SpatialJoin_analysis(targetFeatures, joinFeatures, outfc, join_operation = "JOIN_ONE_TO_ONE", join_type = "KEEP_ALL")  
         
         # Rename fields
@@ -105,23 +112,18 @@ for c in range(len(counties)):
         for i in range(len(oldFields)):
             arcpy.AlterField_management(outfc, oldFields[i], newFields[i])
         
+        # Extend list of 'keep' fields
+        if n == 0:
+            keepFieldsList.extend(requiredFieldsList)
+        keepFieldsList.extend(keepFieldsDict(joinFeaturesList[n]))
+        # Re-list target features fields
+        fields = arcpy.ListFields(outfc)
+        dropFields = [f.name for f in fields if f.name not in keepFieldsList]        
+        
         # Delete fields
-        arcpy.DeleteField_management(outfc, delFieldsDict(joinFeaturesList[n]))
+        arcpy.DeleteField_management(outfc, dropFields)
+        
         print "Spatial joined " + counties[c] + " " + joinFeaturesList[n]
 
 end = time.time()
 print(str((end-start)/60) + " minutes")
-        
-
-
-
-
-
-
-
-
-
-
-
-
-
