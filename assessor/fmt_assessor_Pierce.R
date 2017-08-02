@@ -141,8 +141,9 @@ for (a in 1:length(attributes)) {
                         fill = TRUE, 
                         sep = '|', 
                         quote = "", 
-                        comment.char = "", 
-                        row.names = NULL)
+                        comment.char = ""#, 
+                        # row.names = NULL
+                        )
     table <- table[,c(1:(ncol(table)-1))]
     colnames(table) <- headers[[a]]
   } else {
@@ -152,10 +153,10 @@ for (a in 1:length(attributes)) {
                         sep = '|', 
                         quote = "", 
                         comment.char = "", 
-                        row.names = NULL, 
+                        # row.names = NULL, 
                         col.names = headers[[a]])
   }
-  write.table(table, file.path('data_formatted', paste0(attributes[a],'.txt')), sep = "|")
+  write.table(table, file.path('data_formatted', paste0(attributes[a],'.txt')), row.names = FALSE, quote = FALSE, sep = "|")
   print(paste("Exported", attributes[a]))
 }
 
