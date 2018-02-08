@@ -9,7 +9,7 @@ import glob
 import zipfile
 
 # Select output directory
-outDir = r'J:\Projects\UrbanSim\NEW_DIRECTORY\Databases\Access\Parcels\Snohomish\2017\dwnld_2017_02_16'
+outDir = r'J:\Projects\UrbanSim\NEW_DIRECTORY\Databases\Access\Parcels\Snohomish\2018\dwnld_2018_02_07'
 
 # Inputs
 assrroll = "assr_roll"
@@ -21,9 +21,9 @@ shapes = "parcels"
 # dictionary containing url headers
 def urlDict(x):
     return {
-        'assr_roll': 'ftp://ftp.snoco.org/Assessor/Assessor_roll/MS_Access/',
-        'prop_char': 'ftp://ftp.snoco.org/Assessor/prop_characteristics/',
-        'prop_sales': 'ftp://ftp.snoco.org/Assessor/PropertySales/',
+        'assr_roll': 'ftp://ftp.snoco.org/assessor/assessor_roll/MS_Access/',
+        'prop_char': 'ftp://ftp.snoco.org/assessor/Property_Characteristics/',
+        'prop_sales': 'ftp://ftp.snoco.org/assessor/Property_Sales/',
         'gis': 'ftp://ftp.snoco.org/Assessor/shapefiles/'
     }[x]
 
@@ -68,5 +68,5 @@ downloadData(propSales, 'prop_sales', 'pdf')
 downloadData(shapes, 'gis', 'zip')
 
 # extract zip files to output directory
-unzipFiles(outDir)
+#unzipFiles(outDir)
 

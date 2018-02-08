@@ -6,19 +6,19 @@ import glob
 import zipfile
 
 # Select output directory
-outDir = r'J:\Projects\UrbanSim\NEW_DIRECTORY\Databases\Access\Parcels\Pierce\2017\dwnld_2017_02_16'
+outDir = r'J:\Projects\UrbanSim\NEW_DIRECTORY\Databases\Access\Parcels\Pierce\2018\dwnld_2018_02_07'
 
 # Inputs
 assrdata = ["appraisal_account", "improvement", "improvement_builtas", "improvement_detail", "land_attribute", "sale", "seg_merge", 
             "tax_account", "tax_description"]
-shapes = "0bddcec060764ce8a6b6c07a60af170c_0"
+shapes = "Tax-Parcels-3159d197629543c99e288ac5ec61878e_0-fgdb"
 
 # dictionary containing url headers
 def urlDict(x):
     return {
         'assrdata': 'https://online.co.pierce.wa.us/datamart/',
         'assrdesc': 'https://online.co.pierce.wa.us/cfapps/atr/datamart/metadata/',
-        'gis': 'http://gisdata.piercecowa.opendata.arcgis.com/datasets/'
+        'gis': 'http://gisdata-piercecowa.opendata.arcgis.com/datasets/tax-parcels/'
     }[x]
 
 # function to download data
