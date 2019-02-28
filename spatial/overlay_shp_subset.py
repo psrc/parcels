@@ -14,6 +14,7 @@ shpDict = {
         'block': 'W:\\geodata\\census\\Block\\block2010.shp'
         }
 
+# Dictionary containing feature name
 shpName = {
         'juris': 'psrc_region',
         'zipcode': 'zipcode',

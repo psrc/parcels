@@ -1,8 +1,9 @@
 # This script will append column headers to Pierce County Assessors files
 # and export as new set of txt files 
 
-rootDir <- 'J:/Projects/UrbanSim/NEW_DIRECTORY/Databases/Access/Parcels/Pierce/2016/downloads/March_8_2016'
+rootDir <- 'J:/Projects/UrbanSim/NEW_DIRECTORY/Databases/Access/Parcels/Pierce/2018/dwnld_2018_02_07'
 setwd(rootDir)
+outDir <- 'data_formatted'
 attributes <- c('appraisal_account', 'improvement', 'improvement_builtas', 'improvement_detail', 'land_attribute', 'sale', 'tax_account', 'tax_description')
 
 aa <- c('parcel_number', 
@@ -136,7 +137,8 @@ headers <- list(aa, i, ib, id, la, s, ta, td)
 
 for (a in 1:length(attributes)) {
   if (attributes[a] == 'tax_account'| attributes[a] == 'tax_description') {
-    table <- read.table(file.path(attributes[a], paste0(attributes[a], '.txt')), 
+    # table <- read.table(file.path(attributes[a], paste0(attributes[a], '.txt')), 
+    table <- read.table(paste0(attributes[a], '.txt'),
                         header = FALSE, 
                         fill = TRUE, 
                         sep = '|', 
@@ -147,7 +149,8 @@ for (a in 1:length(attributes)) {
     table <- table[,c(1:(ncol(table)-1))]
     colnames(table) <- headers[[a]]
   } else {
-    table <- read.table(file.path(attributes[a], paste0(attributes[a], '.txt')), 
+    # table <- read.table(file.path(attributes[a], paste0(attributes[a], '.txt')), 
+    table <- read.table(paste0(attributes[a], '.txt'), 
                         header = FALSE, 
                         fill = TRUE, 
                         sep = '|', 
@@ -156,7 +159,7 @@ for (a in 1:length(attributes)) {
                         # row.names = NULL, 
                         col.names = headers[[a]])
   }
-  write.table(table, file.path('data_formatted', paste0(attributes[a],'.txt')), row.names = FALSE, quote = FALSE, sep = "|")
+  write.table(table, file.path(outDir, paste0(attributes[a],'.txt')), row.names = FALSE, quote = FALSE, sep = "|")
   print(paste("Exported", attributes[a]))
 }
 

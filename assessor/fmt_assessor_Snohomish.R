@@ -1,8 +1,11 @@
 # This script will append column headers to Snohomish County Assessors files
 # and export as new set of txt files 
 
-rootDir <- 'J:/Projects/UrbanSim/NEW_DIRECTORY/Databases/Access/Parcels/Snohomish/2016/downloads/March_10_2016/prop_characteristics'
+library(openxlsx)
+
+rootDir <- 'J:/Projects/UrbanSim/NEW_DIRECTORY/Databases/Access/Parcels/Snohomish/2018/dwnld_2018_02_07'
 setwd(rootDir)
+outDir <- 'data_formatted'
 attributes <- c("Master", "Land", "Improvement")
 col.attributes <- c("Master", "Land", "Improvements")
 year <- '2016'
@@ -38,7 +41,7 @@ for (a in 1:length(attributes)) {
                         stringsAsFactors = FALSE,
                         col.names = headers[[a]])
   }
-  write.table(table, file.path('data_formatted', paste0('SnohomishCo_', attributes[a], '_Records_', year, 'AV.txt')), row.names = FALSE, quote = FALSE, sep = "\t")
+  write.table(table, file.path(outDir, paste0('SnohomishCo_', attributes[a], '_Records_', year, 'AV.txt')), row.names = FALSE, quote = FALSE, sep = "\t")
   print(paste("Exported", attributes[a]))
 }
 
