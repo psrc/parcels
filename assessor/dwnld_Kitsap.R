@@ -2,8 +2,7 @@ library(rvest)
 library(data.table)
 library(tidyverse)
 
-default.dir <- getwd()
-out.dir <-"AssessorKitsap"
+out.dir <-"C:/Users/CLam/Documents/AssessorKitsap"
 setwd(out.dir)
 
 domain <- "https://www.kitsapgov.com/"
@@ -23,13 +22,15 @@ create.filename <- function(links) {
     unlist
 }
 
-data.links <- scrape.links(".ms-rteTableEvenCol-2:nth-child(1) a") # css selector found via https://selectorgadget.com/
-data.fnames <- create.filename(data.links)
-walk2(data.links, data.fnames, download.file)
+execute.process <- function(cssselector) {
+  download.files <- partial(download.file, mode = "wb")
+  data.links <- scrape.links(cssselector)
+  data.fnames <- create.filename(data.links)
+  walk2(data.links, data.fnames, download.files)
+}
 
-doc.links <- scrape.links(".ms-rteTableOddCol-2+ .ms-rteTableEvenCol-2 a")
-doc.fnames <- create.filename(doc.links)
-download.pdf <- partial(download.file, mode = "wb")
-walk2(doc.links, doc.fnames, download.pdf)
+# css selector found via https://selectorgadget.com/
+# data, pdfs
+css.selectors <- list(".ms-rteTableEvenCol-2:nth-child(1) a", ".ms-rteTableOddCol-2+ .ms-rteTableEvenCol-2 a")
 
-setwd(default.dir)
+walk(css.selectors, execute.process)
