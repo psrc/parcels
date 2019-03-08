@@ -2,11 +2,11 @@ library(rvest)
 library(RCurl)
 library(tidyverse)
 
-default.dir <- getwd()
-out.dir <-"AssessorSnohomish"
+
+out.dir <- "C:/Users/CLam/Documents/AssessorSnohomish"
 setwd(out.dir)
 
-# assessor_roll currently excluded from download, it is a very generalized & limited dataset with no impr/building records
+# assessor_roll currently excluded from download
 
 webpg <- read_html("https://snohomishcountywa.gov/3183/FTP-Data-Downloads")
 
@@ -42,4 +42,3 @@ main.fnames <- create.filename(main.links)
 download.files <- partial(download.file, mode = "wb")
 walk2(main.links, main.fnames, download.files)
 
-setwd(default.dir)
