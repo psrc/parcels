@@ -3,13 +3,11 @@ library(data.table)
 library(odbc)
 library(DBI)
 
-curr.dir <- "C:/Users/CLam/Documents"
+curr.dir <- "C:/Users/CLam/Documents/AssessorKitsap"
 this.dir <- dirname(rstudioapi::getSourceEditorContext()$path)
 setwd(this.dir)
 source("functions_elmer_prep.R")
 
-setwd(curr.dir)
-data.dir <-"AssessorKitsap"
 setwd(data.dir)
 
 # vector of files
