@@ -13,21 +13,41 @@ data.dir <-"AssessorKitsap"
 setwd(data.dir)
 
 # vector of files
-files <- c("parcels", "dwellings", "mh", "comml_imps", "valuations") # codes may have issue reading
+files <- c("parcels", "dwellings", "mh", "comml_imps", "valuations", "codes") # codes may have issue reading, needs to be converted to UTF-8 beforehand
 filenames <- paste0(files, ".txt")
-db.tblname <- c("Parcel", "Dwelling", "MobileHome", "CommercialImprovement", "Valuation")
+db.tblname <- c("Parcel", "Dwelling", "MobileHome", "CommercialImprovement", "Valuation", "Codes")
+
+clean.codes.dt <- function(filename) {
+  dt <- fread(filename)
+  colname2rm <- str_subset(colnames(dt), "^V\\d*")
+  new.colnames <- setdiff(colnames(dt), colname2rm)
+  col2rm <- colnames(dt)[apply(dt, 2, function(x) all(is.na(x)))]
+  cols <- setdiff(colnames(dt), col2rm)
+  t <- dt[, ..cols]
+  setnames(t, colnames(t), new.colnames)
+  print("Tidied table, ignore warning")
+  return(t)
+}
+
 
 # Update Elmer ------------------------------------------------------------
 
 elmer_connection <- db.connect("Elmer")
-for (i in 1:length(filenames[1])) {
-  working.dbtable <- paste0("tblKitsap_", db.tblname[i])
-  dt <- fread(filenames[[i]])
-  DBI::dbWriteTable(elmer_connection, Id( schema = "Assessor", table = working.dbtable), as.data.frame(dt), overwrite = TRUE)
-  # working.dbtable <- paste0('Assessor.tblKitsap', db.tblname[i])
-  # dt <- fread(filenames[[i]])
-  # dbWriteTable(elmer_connection, working.dbtable, as.data.frame(dt))
+
+for (i in 1:length(filenames)) {
+  working.dbtable <- paste0("tblKitsap_", db.tblname[i]) # DBI 1.0.0 "_" quirk
+  if (db.tblname[i] == "Codes") {
+    dt <- clean.codes.dt(filenames[[i]])
+  } else {
+    dt <- fread(filenames[[i]])
+  }
+  if (elmer_connection@info$dbname == "Elmer") {
+    dbWriteTable(elmer_connection, Id(schema = "Assessor", table = working.dbtable), as.data.frame(dt), overwrite = TRUE)
+  } else if (elmer_connection@info$dbname == "Sandbox") {
+    dbWriteTable(elmer_connection, Id(table = working.dbtable), as.data.frame(dt), overwrite = TRUE)
+  }
 }
+
 dbDisconnect(elmer_connection)
 
 setwd(curr.dir)
