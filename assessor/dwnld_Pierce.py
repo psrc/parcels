@@ -6,7 +6,7 @@ import glob
 import zipfile
 
 # Select output directory
-outDir = r'J:\Projects\UrbanSim\NEW_DIRECTORY\Databases\Access\Parcels\Pierce\2018\dwnld_2018_02_07'
+outDir = r'.\downloads'
 
 # Inputs
 assrdata = ["appraisal_account", "improvement", "improvement_builtas", "improvement_detail", "land_attribute", "sale", "seg_merge", 
