@@ -236,6 +236,7 @@ class KitsapAssessorETL(AssessorETL):
 	            'MobileHome': ['MH.txt'],
 	            'Valuations': ['Valuations.txt'],
 	            'Codes': ['Codes.txt'],
+	            'Property_addresses': ['Property_addresses.txt'],
 	            'Comml_Imps': ['Comml_Imps.txt']}
 
 
